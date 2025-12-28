@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
-import { Globe, Workflow, Search, Share2, Target, Palette, Sparkles, ChevronRight } from 'lucide-react';
+import { Globe, Workflow, Search, Share2, Target, Palette, Sparkles, ChevronDown } from 'lucide-react';
 import { Card } from '../components/Card';
 
 interface Service {
@@ -9,8 +9,6 @@ interface Service {
     title: string;
     description: string;
     featured?: boolean;
-    includes?: string[];
-    bestFor?: string[];
 }
 
 const services: Service[] = [
@@ -18,43 +16,31 @@ const services: Service[] = [
         icon: Globe,
         title: 'Website Development',
         description: 'Modern, fast, and responsive websites built with cutting-edge technologies. From landing pages to complex web applications.',
-        includes: ['Custom Design', 'Responsive Layout', 'CMS Integration'],
-        bestFor: ['Startups', 'E-commerce', 'Agencies'],
     },
     {
         icon: Workflow,
         title: 'Business Automation',
         description: 'Streamline operations with n8n workflows. Automate repetitive tasks and integrate your tools for maximum efficiency.',
-        includes: ['n8n Workflows', 'API Integrations', 'Custom Scripts'],
-        bestFor: ['Growing Businesses', 'SaaS', 'Operations Teams'],
     },
     {
         icon: Search,
         title: 'SEO Optimization',
         description: 'Rank higher on search engines with data-driven SEO strategies. More visibility means more customers.',
-        includes: ['Keyword Research', 'On-page SEO', 'Technical Audit'],
-        bestFor: ['Local Businesses', 'E-commerce', 'Blogs'],
     },
     {
         icon: Share2,
         title: 'Social Media Marketing',
         description: 'Build your brand presence across all platforms. Strategic content that engages and converts your audience.',
-        includes: ['Content Strategy', 'Community Management', 'Analytics'],
-        bestFor: ['Brands', 'Influencers', 'Retail'],
     },
     {
         icon: Target,
         title: 'Paid Advertising',
         description: 'ROI-focused ad campaigns on Google, Facebook, and LinkedIn. Every dollar spent is a strategic investment.',
-        includes: ['Google Ads', 'Meta Ads', 'LinkedIn Campaigns'],
-        bestFor: ['Lead Generation', 'E-commerce', 'B2B'],
     },
     {
         icon: Palette,
         title: 'Content & Design',
         description: 'Professional graphics, videos, and content that tell your brand story and capture attention.',
-        includes: ['Brand Identity', 'Video Production', 'Copywriting'],
-        bestFor: ['Rebranding', 'Product Launches', 'Marketing'],
     },
 ];
 
@@ -84,44 +70,18 @@ const FeaturedServiceCard: React.FC<{ service: Service }> = ({ service }) => (
         </div>
         
         <div className="relative z-10">
-            <div className="mb-3 sm:mb-4">
-                <div className="w-11 h-11 sm:w-14 sm:h-14 bg-primary-100 rounded-lg sm:rounded-xl flex items-center justify-center
+            <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div className="w-11 h-11 sm:w-14 sm:h-14 bg-primary-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0
                     group-hover:bg-primary-600 transition-colors duration-300">
                     <service.icon className="text-primary-600 group-hover:text-white transition-colors duration-300 w-5 h-5 sm:w-7 sm:h-7" />
                 </div>
+                <h3 className="text-lg sm:text-xl font-bold text-dark-900">
+                    {service.title}
+                </h3>
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-dark-900 mb-1.5 sm:mb-2">
-                {service.title}
-            </h3>
             <p className="text-sm sm:text-base text-dark-600 leading-relaxed">
                 {service.description}
             </p>
-            
-            {/* Hover Reveal Section */}
-            <div className="mt-4 pt-4 border-t border-dark-100 
-                opacity-0 max-h-0 overflow-hidden
-                group-hover:opacity-100 group-hover:max-h-40
-                transition-all duration-300 ease-out">
-                {service.includes && (
-                    <div className="mb-3">
-                        <p className="text-xs font-semibold text-dark-400 uppercase tracking-wider mb-2">Includes</p>
-                        <div className="flex flex-wrap gap-2">
-                            {service.includes.map((item) => (
-                                <span key={item} className="text-xs bg-primary-50 text-primary-700 px-2 py-1 rounded-md">
-                                    {item}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                )}
-                {service.bestFor && (
-                    <div className="flex items-center gap-2 text-dark-600 text-sm">
-                        <ChevronRight size={14} className="text-primary-500" />
-                        <span className="text-dark-400">Best for:</span>
-                        <span>{service.bestFor.join(', ')}</span>
-                    </div>
-                )}
-            </div>
         </div>
     </motion.div>
 );
@@ -130,49 +90,25 @@ const FeaturedServiceCard: React.FC<{ service: Service }> = ({ service }) => (
 const ServiceCard: React.FC<{ service: Service }> = ({ service }) => (
     <div className="group h-full">
         <Card className="h-full">
-            <div className="mb-3 sm:mb-4">
-                <div className="w-11 h-11 sm:w-14 sm:h-14 bg-primary-100 rounded-lg sm:rounded-xl flex items-center justify-center
+            <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div className="w-11 h-11 sm:w-14 sm:h-14 bg-primary-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0
                     group-hover:bg-primary-600 transition-colors duration-300">
                     <service.icon className="text-primary-600 group-hover:text-white transition-colors duration-300 w-5 h-5 sm:w-7 sm:h-7" />
                 </div>
+                <h3 className="text-lg sm:text-xl font-bold text-dark-900">
+                    {service.title}
+                </h3>
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-dark-900 mb-1.5 sm:mb-2">
-                {service.title}
-            </h3>
             <p className="text-sm sm:text-base text-dark-600 leading-relaxed">
                 {service.description}
             </p>
-            
-            {/* Hover Reveal Section */}
-            <div className="mt-4 pt-4 border-t border-dark-100 
-                opacity-0 max-h-0 overflow-hidden
-                group-hover:opacity-100 group-hover:max-h-40
-                transition-all duration-300 ease-out">
-                {service.includes && (
-                    <div className="mb-3">
-                        <p className="text-xs font-semibold text-dark-400 uppercase tracking-wider mb-2">Includes</p>
-                        <div className="flex flex-wrap gap-2">
-                            {service.includes.map((item) => (
-                                <span key={item} className="text-xs bg-primary-50 text-primary-700 px-2 py-1 rounded-md">
-                                    {item}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                )}
-                {service.bestFor && (
-                    <div className="flex items-center gap-2 text-dark-600 text-sm">
-                        <ChevronRight size={14} className="text-primary-500" />
-                        <span className="text-dark-400">Best for:</span>
-                        <span>{service.bestFor.join(', ')}</span>
-                    </div>
-                )}
-            </div>
         </Card>
     </div>
 );
 
 export const Services: React.FC = () => {
+    const [showAllMobile, setShowAllMobile] = useState(false);
+
     return (
         <section id="services" className="py-16 sm:py-20 bg-white">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -192,8 +128,8 @@ export const Services: React.FC = () => {
                     </p>
                 </motion.div>
 
-                {/* Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+                {/* Cards - Desktop/Tablet (sm and above) - Always show all */}
+                <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
                     {services.map((service, index) => (
                         <motion.div
                             key={service.title}
@@ -209,6 +145,81 @@ export const Services: React.FC = () => {
                             )}
                         </motion.div>
                     ))}
+                </div>
+
+                {/* Cards - Mobile Only - Show first 2, then expand */}
+                <div className="sm:hidden">
+                    <div className="grid grid-cols-1 gap-4">
+                        {/* Always show first 2 services */}
+                        {services.slice(0, 2).map((service, index) => (
+                            <motion.div
+                                key={service.title}
+                                initial={{ opacity: 0, y: 24 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
+                                transition={{ duration: 0.55, delay: index * 0.08, ease: 'easeOut' }}
+                            >
+                                {service.featured ? (
+                                    <FeaturedServiceCard service={service} />
+                                ) : (
+                                    <ServiceCard service={service} />
+                                )}
+                            </motion.div>
+                        ))}
+
+                        {/* Remaining services - shown when expanded */}
+                        <AnimatePresence>
+                            {showAllMobile && (
+                                <>
+                                    {services.slice(2).map((service, index) => (
+                                        <motion.div
+                                            key={service.title}
+                                            initial={{ opacity: 0, y: 24, height: 0 }}
+                                            animate={{ opacity: 1, y: 0, height: 'auto' }}
+                                            exit={{ opacity: 0, y: -12, height: 0 }}
+                                            transition={{ duration: 0.4, delay: index * 0.08, ease: 'easeOut' }}
+                                        >
+                                            {service.featured ? (
+                                                <FeaturedServiceCard service={service} />
+                                            ) : (
+                                                <ServiceCard service={service} />
+                                            )}
+                                        </motion.div>
+                                    ))}
+                                </>
+                            )}
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Learn More / Show Less Button - Mobile Only */}
+                    {!showAllMobile ? (
+                        <motion.button
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.3 }}
+                            onClick={() => setShowAllMobile(true)}
+                            className="w-full mt-6 py-3.5 px-6 bg-primary-50 hover:bg-primary-100 
+                                text-primary-600 font-semibold rounded-xl
+                                flex items-center justify-center gap-2
+                                transition-all duration-300 border border-primary-200"
+                        >
+                            View All Services
+                            <ChevronDown size={20} />
+                        </motion.button>
+                    ) : (
+                        <motion.button
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            onClick={() => setShowAllMobile(false)}
+                            className="w-full mt-6 py-3.5 px-6 bg-dark-100 hover:bg-dark-200 
+                                text-dark-600 font-semibold rounded-xl
+                                flex items-center justify-center gap-2
+                                transition-all duration-300"
+                        >
+                            Show Less
+                            <ChevronDown size={20} className="rotate-180" />
+                        </motion.button>
+                    )}
                 </div>
             </div>
         </section>
