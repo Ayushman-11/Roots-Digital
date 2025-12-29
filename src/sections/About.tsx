@@ -197,10 +197,10 @@ export const About: React.FC = () => {
                         transition={{ duration: 0.65, ease: 'easeOut' }}
                         className="text-center lg:text-left"
                     >
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 mb-3">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-dark-900 mb-3 text-center">
                             About <span className="text-primary-600">DigiRoots</span>
                         </h2>
-                        <p className="text-lg sm:text-xl md:text-2xl font-medium text-dark-700 mb-6 border-l-4 border-primary-500 pl-4 text-left">
+                        <p className="text-lg sm:text-xl md:text-2xl font-medium text-dark-700 mb-6 border-l-4 border-primary-500 pl-4 text-center">
                             Where strategy meets automation to scale modern businesses.
                         </p>
                         <div className="space-y-3 text-base sm:text-lg text-dark-600 leading-relaxed text-left">
