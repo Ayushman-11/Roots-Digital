@@ -39,7 +39,7 @@ const steps: Step[] = [
 
 export const HowWeWork: React.FC = () => {
     return (
-        <section id="how-we-work" className="py-16 sm:py-20 bg-dark-50">
+        <section id="how-we-work" className="py-16 sm:py-20 bg-dark-50 scroll-mt-16 sm:scroll-mt-0">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <motion.div

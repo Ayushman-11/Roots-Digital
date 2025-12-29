@@ -110,7 +110,7 @@ export const Services: React.FC = () => {
     const [showAllMobile, setShowAllMobile] = useState(false);
 
     return (
-        <section id="services" className="py-16 sm:py-20 bg-white">
+        <section id="services" className="py-16 sm:py-20 bg-white scroll-mt-16 sm:scroll-mt-0">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <motion.div

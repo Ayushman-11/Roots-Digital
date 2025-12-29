@@ -8,13 +8,13 @@ export const Footer: React.FC = () => {
         <footer className="bg-gradient-to-b from-dark-900 to-dark-950 text-white">
             {/* Main Footer Content */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12 mb-12">
                     {/* Brand */}
-                    <div className="sm:col-span-2 lg:col-span-2 text-center sm:text-left">
+                    <div className="col-span-2 lg:col-span-2 text-center sm:text-left">
                         <h3 className="text-2xl font-bold mb-4">
                             Digi<span className="text-primary-500">Roots</span>
                         </h3>
-                        <p className="text-dark-300 mb-6 max-w-md mx-auto sm:mx-0 leading-relaxed">
+                        <p className="text-dark-300 mb-6 max-w-md mx-auto sm:mx-0 leading-relaxed text-sm sm:text-base">
                             DigiRoots helps startups and businesses grow through modern websites,
                             smart automation, and performance-driven marketing.
                         </p>
@@ -56,26 +56,26 @@ export const Footer: React.FC = () => {
                     </div>
 
                     {/* Quick Links */}
-                    <div className="text-center sm:text-left">
-                        <h4 className="font-semibold mb-4 text-white">Quick Links</h4>
-                        <ul className="space-y-3">
+                    <div className="text-left">
+                        <h4 className="font-semibold mb-3 sm:mb-4 text-white text-sm sm:text-base">Quick Links</h4>
+                        <ul className="space-y-2 sm:space-y-3">
                             <li>
-                                <a href="#services" className="text-dark-300 hover:text-primary-400 transition-colors duration-200 inline-block">
+                                <a href="#services" className="text-dark-300 hover:text-primary-400 transition-colors duration-200 inline-block text-sm sm:text-base">
                                     Services
                                 </a>
                             </li>
                             <li>
-                                <a href="#how-we-work" className="text-dark-300 hover:text-primary-400 transition-colors duration-200 inline-block">
+                                <a href="#how-we-work" className="text-dark-300 hover:text-primary-400 transition-colors duration-200 inline-block text-sm sm:text-base">
                                     How We Work
                                 </a>
                             </li>
                             <li>
-                                <a href="#about" className="text-dark-300 hover:text-primary-400 transition-colors duration-200 inline-block">
+                                <a href="#about" className="text-dark-300 hover:text-primary-400 transition-colors duration-200 inline-block text-sm sm:text-base">
                                     About Us
                                 </a>
                             </li>
                             <li>
-                                <a href="#contact" className="text-dark-300 hover:text-primary-400 transition-colors duration-200 inline-block">
+                                <a href="#contact" className="text-dark-300 hover:text-primary-400 transition-colors duration-200 inline-block text-sm sm:text-base">
                                     Contact
                                 </a>
                             </li>
@@ -83,30 +83,30 @@ export const Footer: React.FC = () => {
                     </div>
 
                     {/* Contact */}
-                    <div className="text-center sm:text-left">
-                        <h4 className="font-semibold mb-4 text-white">Contact Us</h4>
-                        <ul className="space-y-3">
+                    <div className="text-left">
+                        <h4 className="font-semibold mb-3 sm:mb-4 text-white text-sm sm:text-base">Contact Us</h4>
+                        <ul className="space-y-2 sm:space-y-3">
                             <li>
                                 <a 
                                     href="mailto:hello@digiroots.com" 
-                                    className="inline-flex items-center gap-2 text-dark-300 hover:text-primary-400 transition-colors duration-200"
+                                    className="inline-flex items-center gap-2 text-dark-300 hover:text-primary-400 transition-colors duration-200 text-sm sm:text-base"
                                 >
-                                    <Mail size={16} className="flex-shrink-0" />
+                                    <Mail size={14} className="flex-shrink-0 sm:w-4 sm:h-4" />
                                     hello@digiroots.com
                                 </a>
                             </li>
                             <li>
                                 <a 
                                     href="tel:+1234567890" 
-                                    className="inline-flex items-center gap-2 text-dark-300 hover:text-primary-400 transition-colors duration-200"
+                                    className="inline-flex items-center gap-2 text-dark-300 hover:text-primary-400 transition-colors duration-200 text-sm sm:text-base"
                                 >
-                                    <Phone size={16} className="flex-shrink-0" />
+                                    <Phone size={14} className="flex-shrink-0 sm:w-4 sm:h-4" />
                                     +1 (234) 567-890
                                 </a>
                             </li>
-                            <li className="flex items-center gap-2 text-dark-400 justify-center sm:justify-start">
-                                <Clock size={16} className="flex-shrink-0" />
-                                <span className="text-sm">Mon–Sat | 10AM–7PM IST</span>
+                            <li className="flex items-center gap-2 text-dark-400">
+                                <Clock size={14} className="flex-shrink-0 sm:w-4 sm:h-4" />
+                                <span className="text-xs sm:text-sm">Mon–Sat | 10AM–7PM</span>
                             </li>
                         </ul>
                     </div>
