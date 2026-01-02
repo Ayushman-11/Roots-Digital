@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, CheckCircle, Loader2, ChevronDown } from 'lucide-react';
 
 const serviceOptions = [
     'Website Development',
-    'Business Automation (n8n / workflows)',
+    'Business Automation',
     'SEO Optimization',
-    'Paid Advertising',
-    'Full Digital Setup',
+    'Social Media Marketing',
+    'Digital Marketing',
+    'Content & Design',
 ];
 
 export const Contact: React.FC = () => {
@@ -20,6 +21,7 @@ export const Contact: React.FC = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,7 +57,7 @@ export const Contact: React.FC = () => {
     };
 
     return (
-        <section id="contact" className="py-16 sm:py-20 bg-dark-50">
+        <section id="contact" className="py-16 sm:py-20 bg-dark-50 scroll-mt-16 sm:scroll-mt-0">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="max-w-3xl mx-auto">
                     <motion.div
@@ -94,11 +96,11 @@ export const Contact: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
                         transition={{ duration: 0.65, delay: 0.1, ease: 'easeOut' }}
-                        className="bg-white rounded-3xl p-6 sm:p-8 md:p-12 shadow-lg border border-dark-100"
+                        className="bg-white rounded-3xl shadow-lg border border-dark-100 overflow-hidden p-6 sm:p-8 md:p-12"
                     >
                         {!isSubmitted ? (
                             <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
-                                {/* Name & Email Row */}
+                                {/* Always Visible - Name & Email Row */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
                                         <label htmlFor="name" className="block text-sm font-medium text-dark-700 mb-2">
@@ -139,7 +141,7 @@ export const Contact: React.FC = () => {
                                     </div>
                                 </div>
 
-                                {/* Business Name */}
+                                {/* Always Visible - Business Name */}
                                 <div>
                                     <label htmlFor="business" className="block text-sm font-medium text-dark-700 mb-2">
                                         Company / Brand Name *
@@ -159,83 +161,124 @@ export const Contact: React.FC = () => {
                                     />
                                 </div>
 
-                                {/* Service Interest */}
-                                <div>
-                                    <label className="block text-sm font-medium text-dark-700 mb-3">
-                                        What services are you interested in?
-                                    </label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {serviceOptions.map((service) => (
+                                {/* Expand Button - Show when collapsed */}
+                                {!isExpanded && (
+                                    <motion.button
+                                        type="button"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        onClick={() => setIsExpanded(true)}
+                                        className="w-full py-3 px-4 bg-primary-50 hover:bg-primary-100 
+                                            text-primary-600 font-medium rounded-xl
+                                            flex items-center justify-center gap-2
+                                            transition-all duration-300 border border-primary-200
+                                            hover:scale-[1.01]"
+                                    >
+                                        Continue with more details
+                                        <ChevronDown size={20} />
+                                    </motion.button>
+                                )}
+
+                                {/* Expandable Section - Rest of the form */}
+                                <AnimatePresence>
+                                    {isExpanded && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.4, ease: 'easeOut' }}
+                                            className="space-y-5 sm:space-y-6 overflow-hidden"
+                                        >
+
+                                            {/* Service Interest */}
+                                            <div>
+                                                <label className="block text-sm font-medium text-dark-700 mb-3">
+                                                    What services are you interested in?
+                                                </label>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {serviceOptions.map((service) => (
+                                                        <button
+                                                            key={service}
+                                                            type="button"
+                                                            onClick={() => handleServiceToggle(service)}
+                                                            className={`px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full 
+                                                                transition-all duration-200 border-2
+                                                                ${formData.services.includes(service)
+                                                                    ? 'bg-primary-500 text-white border-primary-500 shadow-md'
+                                                                    : 'bg-white text-dark-600 border-dark-200 hover:border-primary-300 hover:text-primary-600'
+                                                                }`}
+                                                        >
+                                                            {service}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Project Details */}
+                                            <div>
+                                                <label htmlFor="message" className="block text-sm font-medium text-dark-700 mb-2">
+                                                    What are you trying to build or automate? *
+                                                </label>
+                                                <textarea
+                                                    id="message"
+                                                    name="message"
+                                                    required
+                                                    value={formData.message}
+                                                    onChange={handleChange}
+                                                    rows={4}
+                                                    className="w-full px-4 py-3 sm:py-3.5 border border-dark-200 rounded-xl 
+                                                        focus:ring-2 focus:ring-primary-500 focus:border-transparent 
+                                                        outline-none transition-all duration-200 resize-none
+                                                        hover:border-dark-300 shadow-sm"
+                                                    placeholder="Tell us about your project, goals, and timeline..."
+                                                />
+                                            </div>
+
+                                            {/* Submit Button */}
                                             <button
-                                                key={service}
-                                                type="button"
-                                                onClick={() => handleServiceToggle(service)}
-                                                className={`px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full 
-                                                    transition-all duration-200 border-2
-                                                    ${formData.services.includes(service)
-                                                        ? 'bg-primary-500 text-white border-primary-500 shadow-md'
-                                                        : 'bg-white text-dark-600 border-dark-200 hover:border-primary-300 hover:text-primary-600'
-                                                    }`}
+                                                type="submit"
+                                                disabled={isSubmitting}
+                                                className="group w-full bg-primary-600 hover:bg-primary-700 text-white 
+                                                    font-semibold py-4 px-6 rounded-xl
+                                                    transition-all duration-300 ease-out
+                                                    hover:scale-[1.02] hover:shadow-lg hover:shadow-primary-500/25
+                                                    active:scale-[0.98]
+                                                    disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100
+                                                    flex items-center justify-center gap-2"
                                             >
-                                                {service}
+                                                {isSubmitting ? (
+                                                    <>
+                                                        <Loader2 size={20} className="animate-spin" />
+                                                        Sending...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Get Free Strategy Call
+                                                        <ArrowRight 
+                                                            size={20} 
+                                                            className="group-hover:translate-x-1 transition-transform duration-300" 
+                                                        />
+                                                    </>
+                                                )}
                                             </button>
-                                        ))}
-                                    </div>
-                                </div>
 
-                                {/* Project Details */}
-                                <div>
-                                    <label htmlFor="message" className="block text-sm font-medium text-dark-700 mb-2">
-                                        What are you trying to build or automate? *
-                                    </label>
-                                    <textarea
-                                        id="message"
-                                        name="message"
-                                        required
-                                        value={formData.message}
-                                        onChange={handleChange}
-                                        rows={4}
-                                        className="w-full px-4 py-3 sm:py-3.5 border border-dark-200 rounded-xl 
-                                            focus:ring-2 focus:ring-primary-500 focus:border-transparent 
-                                            outline-none transition-all duration-200 resize-none
-                                            hover:border-dark-300 shadow-sm"
-                                        placeholder="Tell us about your project, goals, and timeline..."
-                                    />
-                                </div>
+                                            {/* Social Proof */}
+                                            <p className="text-sm text-dark-500 text-center pt-2">
+                                                <span className="text-yellow-500">⭐</span> Trusted by startups & growing businesses
+                                            </p>
 
-                                {/* Submit Button */}
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="group w-full bg-primary-600 hover:bg-primary-700 text-white 
-                                        font-semibold py-4 px-6 rounded-xl
-                                        transition-all duration-300 ease-out
-                                        hover:scale-[1.02] hover:shadow-lg hover:shadow-primary-500/25
-                                        active:scale-[0.98]
-                                        disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100
-                                        flex items-center justify-center gap-2"
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <Loader2 size={20} className="animate-spin" />
-                                            Sending...
-                                        </>
-                                    ) : (
-                                        <>
-                                            Get Free Strategy Call
-                                            <ArrowRight 
-                                                size={20} 
-                                                className="group-hover:translate-x-1 transition-transform duration-300" 
-                                            />
-                                        </>
+                                            {/* Collapse Option */}
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsExpanded(false)}
+                                                className="w-full flex items-center justify-center gap-2 text-dark-400 hover:text-dark-600 transition-colors duration-200 text-sm"
+                                            >
+                                                <ChevronDown className="rotate-180" size={16} />
+                                                Show less
+                                            </button>
+                                        </motion.div>
                                     )}
-                                </button>
-
-                                {/* Social Proof */}
-                                <p className="text-sm text-dark-500 text-center pt-2">
-                                    <span className="text-yellow-500">⭐</span> Trusted by startups & growing businesses 
-                                    
-                                </p>
+                                </AnimatePresence>
                             </form>
                         ) : (
                             <motion.div

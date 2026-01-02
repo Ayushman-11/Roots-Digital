@@ -20,7 +20,7 @@ export const Hero: React.FC = () => {
     };
 
     return (
-        <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-white to-dark-50 bg-fixed py-16 sm:py-20">
+        <section id="home" className="relative min-h-[75vh] sm:min-h-[80vh] flex items-start justify-center overflow-hidden bg-gradient-to-b from-white to-dark-50 bg-fixed pt-6 sm:pt-8 pb-8 sm:pb-10 scroll-mt-16 sm:scroll-mt-0">
             {/* 3D Animated Background */}
             <Scene3D />
             
@@ -33,7 +33,7 @@ export const Hero: React.FC = () => {
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="max-w-5xl mx-auto text-center space-y-6">
+                <div className="max-w-5xl mx-auto text-center space-y-3 sm:space-y-5">
                     {/* Badge */}
                     <motion.div
                         initial={{ opacity: 0, y: 18 }}
