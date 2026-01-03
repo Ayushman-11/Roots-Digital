@@ -17,18 +17,25 @@ connectDB();
    CORS CONFIGURATION (FIX 1)
    ================================ */
 const allowedOrigins = [
-  'http://localhost:5173',                 // Local frontend
-  'https://y-kd6u6ucgb-sakshi10.vercel.app'       // ✅ REPLACE with your exact Vercel URL
-];
+  'http://localhost:5173',                        // Local frontend
+  'https://y-ovwoathgz-sakshi10.vercel.app',     // Vercel deployment
+  process.env.FRONTEND_URL,                       // From env variable
+].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (Postman, mobile apps)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
+    // Check if origin matches any allowed origin (handles Vercel preview URLs)
+    const isAllowed = allowedOrigins.some(allowed => 
+      origin === allowed || origin.includes('vercel.app') || origin.includes('localhost')
+    );
+
+    if (isAllowed) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
       callback(new Error('CORS policy blocked this origin'));
     }
   },
