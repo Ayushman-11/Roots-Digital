@@ -12,11 +12,19 @@
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
+    "@types/react-router-dom": "^5.3.3",
     "@vercel/analytics": "^1.6.1",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
     "framer-motion": "^12.23.26",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.562.0",
+    "mongoose": "^9.1.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.5",
     "three": "^0.182.0"
   },
   "devDependencies": {
@@ -35,5 +43,18 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"
-  }
+  },
+  "description": "A modern, professional business website built with React, TypeScript, Tailwind CSS, and subtle 3D animations.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ayushman-11/Roots-Digital.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ayushman-11/Roots-Digital/issues"
+  },
+  "homepage": "https://github.com/Ayushman-11/Roots-Digital#readme"
 }

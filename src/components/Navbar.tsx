@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from './Button';
+import { useAuth } from '../context/AuthContext';
 
 export const Navbar: React.FC = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    
+    const { isAuthenticated, user, logout, isLoading } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Check if we're on an auth page
+    const isAuthPage = location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/dashboard';
 
     useEffect(() => {
         const handleScroll = () => {
@@ -24,15 +33,40 @@ export const Navbar: React.FC = () => {
 
     const scrollToSection = (href: string) => {
         setIsMobileMenuOpen(false);
+        
+        // If not on home page, navigate to home first
+        if (location.pathname !== '/') {
+            navigate('/');
+            // Use setTimeout to allow navigation to complete
+            setTimeout(() => {
+                const element = document.querySelector(href);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 100);
+            return;
+        }
+        
         const element = document.querySelector(href);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
         }
     };
 
+    const handleLogout = () => {
+        logout();
+        setIsMobileMenuOpen(false);
+        navigate('/');
+    };
+
     const navShell = isScrolled || isMobileMenuOpen
         ? 'bg-white/95 backdrop-blur-lg shadow-md border-b border-dark-100 py-4'
         : 'bg-transparent py-6';
+
+    // Don't render on auth pages
+    if (isAuthPage) {
+        return null;
+    }
 
     return (
         <motion.nav
@@ -66,9 +100,43 @@ export const Navbar: React.FC = () => {
                                 {link.name}
                             </a>
                         ))}
-                        <Button size="sm" onClick={() => scrollToSection('#contact')}>
-                            Get Started
-                        </Button>
+                        
+                        {/* Auth Buttons */}
+                        {!isLoading && (
+                            <>
+                                {isAuthenticated ? (
+                                    <div className="flex items-center gap-3">
+                                        <Link to="/dashboard">
+                                            <Button size="sm" variant="outline">
+                                                <LayoutDashboard size={16} className="mr-1.5" />
+                                                Profile
+                                            </Button>
+                                        </Link>
+                                        <Button 
+                                            size="sm" 
+                                            onClick={handleLogout}
+                                            className="bg-primary-600 hover:bg-primary-700 text-white"
+                                        >
+                                            <LogOut size={16} className="mr-1.5" />
+                                            Logout
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-3">
+                                        <Link to="/login">
+                                            <Button size="sm" variant="ghost" className="text-dark-700 hover:text-dark-900">
+                                                Login
+                                            </Button>
+                                        </Link>
+                                        <Link to="/signup">
+                                            <Button size="sm">
+                                                Sign Up
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -102,13 +170,43 @@ export const Navbar: React.FC = () => {
                                     {link.name}
                                 </a>
                             ))}
-                            <Button
-                                size="sm"
-                                className="w-full"
-                                onClick={() => scrollToSection('#contact')}
-                            >
-                                Get Started
-                            </Button>
+                            
+                            {/* Mobile Auth Buttons */}
+                            {!isLoading && (
+                                <div className="pt-4 border-t border-dark-100 flex flex-col gap-2">
+                                    {isAuthenticated ? (
+                                        <>
+                                            <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                                                <Button size="sm" className="w-full">
+                                                    <LayoutDashboard size={16} className="mr-1.5" />
+                                                    Profile
+                                                </Button>
+                                            </Link>
+                                            <Button 
+                                                size="sm" 
+                                                className="w-full bg-primary-600 hover:bg-primary-700 text-white"
+                                                onClick={handleLogout}
+                                            >
+                                                <LogOut size={16} className="mr-1.5" />
+                                                Logout
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                                                <Button size="sm" variant="outline" className="w-full">
+                                                    Login
+                                                </Button>
+                                            </Link>
+                                            <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                                                <Button size="sm" className="w-full">
+                                                    Sign Up
+                                                </Button>
+                                            </Link>
+                                        </>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 )}
