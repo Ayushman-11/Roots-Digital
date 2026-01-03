@@ -66,18 +66,29 @@ const apiRequest = async <T>(
         ...options.headers,
     };
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        ...options,
-        headers,
-    });
+    const url = `${API_BASE_URL}${endpoint}`;
+    console.log('API Request to:', url); // Debug log
 
-    const data = await response.json();
+    try {
+        const response = await fetch(url, {
+            ...options,
+            headers,
+        });
 
-    if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Something went wrong');
+        }
+
+        return data;
+    } catch (error) {
+        console.error('API Error:', error);
+        if (error instanceof TypeError && error.message.includes('fetch')) {
+            throw new Error('Unable to connect to server. Please check your internet connection.');
+        }
+        throw error;
     }
-
-    return data;
 };
 
 /**
