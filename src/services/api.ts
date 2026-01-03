@@ -3,8 +3,11 @@
  * Handles all authentication API calls
  */
 
-// Use environment variable for API URL, fallback to localhost for development
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Use environment variable for API URL, fallback to production URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+    (import.meta.env.PROD 
+        ? 'https://roots-digital.onrender.com/api' 
+        : 'http://localhost:5000/api');
 
 // Types
 export interface User {
