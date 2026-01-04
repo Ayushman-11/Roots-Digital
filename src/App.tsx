@@ -1,16 +1,12 @@
-<<<<<<< HEAD
-import { Home } from './components/pages/Home';
-=======
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { Home } from './pages/Home';
-import { Login } from './pages/Login';
-import { Signup } from './pages/Signup';
-import { Dashboard } from './pages/Dashboard';
-import { ForgotPassword } from './pages/ForgotPassword';
-import { ResetPassword } from './pages/ResetPassword';
->>>>>>> 0e65e099e6c04fdf45f9388bed155cf104d93b6a
+import { Home } from './components/pages/Home';
+import { Login } from './components/pages/Login';
+import { Signup } from './components/pages/Signup';
+import { Dashboard } from './components/pages/Dashboard';
+import { ForgotPassword } from './components/pages/ForgotPassword';
+import { ResetPassword } from './components/pages/ResetPassword';
 import './index.css';
 
 function App() {
@@ -24,7 +20,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
-          
+
           {/* Protected Routes */}
           <Route
             path="/dashboard"

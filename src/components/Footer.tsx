@@ -83,27 +83,12 @@ export const Footer: React.FC = () => {
                     </div>
 
                     {/* Contact */}
-<<<<<<< HEAD
-                    <div>
-                        <h4 className="font-semibold mb-4">Contact</h4>
-                        <ul className="space-y-2">
-                            <li className="flex items-center gap-2 text-dark-300">
-                                <Mail size={16} />
-                                <a href="mailto:hello@digiroots.com" className="hover:text-primary-500 transition-colors">
-                                    contact.rootsdigital@gmail.com
-                                </a>
-                            </li>
-                            <li className="flex items-center gap-2 text-dark-300">
-                                <Phone size={16} />
-                                <a href="tel:+1234567890" className="hover:text-primary-500 transition-colors">
-                                    +91 7028469067
-=======
                     <div className="text-left">
                         <h4 className="font-semibold mb-3 sm:mb-4 text-white text-sm sm:text-base">Contact Us</h4>
                         <ul className="space-y-2 sm:space-y-3">
                             <li>
-                                <a 
-                                    href="mailto:hello@digiroots.com" 
+                                <a
+                                    href="mailto:hello@digiroots.com"
                                     className="inline-flex items-center gap-2 text-dark-300 hover:text-primary-400 transition-colors duration-200 text-sm sm:text-base"
                                 >
                                     <Mail size={14} className="flex-shrink-0 sm:w-4 sm:h-4" />
@@ -111,13 +96,12 @@ export const Footer: React.FC = () => {
                                 </a>
                             </li>
                             <li>
-                                <a 
-                                    href="tel:+1234567890" 
+                                <a
+                                    href="tel:+1234567890"
                                     className="inline-flex items-center gap-2 text-dark-300 hover:text-primary-400 transition-colors duration-200 text-sm sm:text-base"
                                 >
                                     <Phone size={14} className="flex-shrink-0 sm:w-4 sm:h-4" />
                                     +1 (234) 567-890
->>>>>>> 0e65e099e6c04fdf45f9388bed155cf104d93b6a
                                 </a>
                             </li>
                             <li className="flex items-center gap-2 text-dark-400">
@@ -129,11 +113,6 @@ export const Footer: React.FC = () => {
                 </div>
             </div>
 
-<<<<<<< HEAD
-                {/* Bottom Bar */}
-                <div className="border-t border-dark-800 pt-8 text-center text-dark-400 text-sm">
-                    <p>&copy; {currentYear} Roots Digital. All rights reserved.</p>
-=======
             {/* Bottom Bar */}
             <div className="border-t border-dark-800 bg-dark-950">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -147,7 +126,6 @@ export const Footer: React.FC = () => {
                             <a href="#" className="hover:text-dark-300 transition-colors duration-200">Terms of Service</a>
                         </div>
                     </div>
->>>>>>> 0e65e099e6c04fdf45f9388bed155cf104d93b6a
                 </div>
             </div>
         </footer>
