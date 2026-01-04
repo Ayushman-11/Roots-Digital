@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '../components/Button';
+import { Scene3D } from '../components/Scene3D';
 
 export const Hero: React.FC = () => {
     const scrollToContact = () => {
@@ -19,17 +20,20 @@ export const Hero: React.FC = () => {
     };
 
     return (
-        <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-white to-dark-50 bg-fixed py-16 sm:py-20">
-            {/* Soft gradient blobs for depth without 3D */}
+        <section id="home" className="relative min-h-[75vh] sm:min-h-[80vh] flex items-start justify-center overflow-hidden bg-gradient-to-b from-white to-dark-50 bg-fixed pt-6 sm:pt-8 pb-8 sm:pb-10 scroll-mt-16 sm:scroll-mt-0">
+            {/* 3D Animated Background */}
+            <Scene3D />
+            
+            {/* Soft gradient blobs for depth */}
             <div className="absolute inset-0 -z-10 overflow-hidden">
-                <div className="absolute -top-24 -left-16 h-80 w-80 rounded-full bg-primary-200/40 blur-3xl" />
-                <div className="absolute top-10 right-0 h-64 w-64 rounded-full bg-primary-100/50 blur-3xl" />
-                <div className="absolute bottom-[-6rem] left-1/3 h-72 w-72 rounded-full bg-dark-100/60 blur-3xl" />
+                <div className="absolute -top-16 -left-8 h-48 w-48 sm:h-64 sm:w-64 md:h-80 md:w-80 rounded-full bg-primary-200/40 blur-3xl" />
+                <div className="absolute top-10 -right-8 sm:right-0 h-40 w-40 sm:h-52 sm:w-52 md:h-64 md:w-64 rounded-full bg-primary-100/50 blur-3xl" />
+                <div className="absolute bottom-[-4rem] left-1/4 sm:left-1/3 h-48 w-48 sm:h-60 sm:w-60 md:h-72 md:w-72 rounded-full bg-dark-100/60 blur-3xl" />
                 <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-white/60 to-dark-50" />
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="max-w-5xl mx-auto text-center space-y-6">
+                <div className="max-w-5xl mx-auto text-center space-y-3 sm:space-y-5">
                     {/* Badge */}
                     <motion.div
                         initial={{ opacity: 0, y: 18 }}
@@ -48,11 +52,12 @@ export const Hero: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7, delay: 0.1, ease: 'easeOut' }}
-                        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-dark-900 leading-tight"
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-dark-900 leading-tight px-2 sm:px-0"
                     >
-                        Digital, Automation & Growth
-                        <br />
-                        <span className="text-primary-600">Solutions for Modern Businesses</span>
+                        <span className="block sm:inline">Digital, Automation</span>
+                        <span className="block sm:inline"> & Growth</span>
+                        <br className="hidden sm:block" />
+                        <span className="text-primary-600 block sm:inline">Solutions for Modern Businesses</span>
                     </motion.h1>
 
                     {/* Subheadline */}
@@ -90,19 +95,19 @@ export const Hero: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7, delay: 0.4, ease: 'easeOut' }}
-                        className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10 max-w-3xl mx-auto"
+                        className="grid grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-10 max-w-3xl mx-auto px-2 sm:px-0"
                     >
-                        <div>
-                            <div className="text-3xl sm:text-4xl font-bold text-dark-900">50+</div>
-                            <div className="text-sm sm:text-base text-dark-600 mt-2">Projects Delivered</div>
+                        <div className="text-center">
+                            <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-900">50+</div>
+                            <div className="text-xs sm:text-sm md:text-base text-dark-600 mt-1 sm:mt-2">Projects Delivered</div>
                         </div>
-                        <div>
-                            <div className="text-3xl sm:text-4xl font-bold text-dark-900">98%</div>
-                            <div className="text-sm sm:text-base text-dark-600 mt-2">Client Satisfaction</div>
+                        <div className="text-center">
+                            <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-900">98%</div>
+                            <div className="text-xs sm:text-sm md:text-base text-dark-600 mt-1 sm:mt-2">Client Satisfaction</div>
                         </div>
-                        <div>
-                            <div className="text-3xl sm:text-4xl font-bold text-dark-900">24/7</div>
-                            <div className="text-sm sm:text-base text-dark-600 mt-2">Support Available</div>
+                        <div className="text-center">
+                            <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-900">24/7</div>
+                            <div className="text-xs sm:text-sm md:text-base text-dark-600 mt-1 sm:mt-2">Support Available</div>
                         </div>
                     </motion.div>
                 </div>
@@ -113,7 +118,7 @@ export const Hero: React.FC = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, delay: 1.2 }}
-                className="absolute bottom-6 left-1/2 transform -translate-x-1/2"
+                className="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 hidden sm:block"
             >
                 <motion.div
                     animate={{ y: [0, 10, 0] }}
