@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, CheckCircle, Loader2, ChevronDown } from 'lucide-react';
+import { ArrowRight, CheckCircle, Loader2, ChevronDown, AlertCircle } from 'lucide-react';
+
+// API URL - uses production URL in production, localhost in development
+const API_BASE_URL = import.meta.env.PROD 
+    ? 'https://roots-digital.onrender.com/api' 
+    : 'http://localhost:5000/api';
 
 const serviceOptions = [
     'Website Development',
@@ -21,26 +26,51 @@ export const Contact: React.FC = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [error, setError] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setError('');
         
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        console.log('Form submitted:', formData);
-        setIsSubmitting(false);
-        setIsSubmitted(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/leads`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    companyName: formData.business,
+                    serviceInterested: formData.services.join(', '),
+                    message: formData.message,
+                }),
+            });
 
-        setTimeout(() => {
-            setIsSubmitted(false);
-            setFormData({ name: '', email: '', business: '', services: [], message: '' });
-        }, 3000);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Something went wrong');
+            }
+
+            setIsSubmitted(true);
+            setTimeout(() => {
+                setIsSubmitted(false);
+                setFormData({ name: '', email: '', business: '', services: [], message: '' });
+                setIsExpanded(false);
+            }, 4000);
+        } catch (err) {
+            console.error('Form submission error:', err);
+            setError(err instanceof Error ? err.message : 'Failed to submit. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setError(''); // Clear error when user types
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
@@ -48,6 +78,7 @@ export const Contact: React.FC = () => {
     };
 
     const handleServiceToggle = (service: string) => {
+        setError(''); // Clear error when user selects
         setFormData(prev => ({
             ...prev,
             services: prev.services.includes(service)
@@ -98,6 +129,18 @@ export const Contact: React.FC = () => {
                         transition={{ duration: 0.65, delay: 0.1, ease: 'easeOut' }}
                         className="bg-white rounded-3xl shadow-lg border border-dark-100 overflow-hidden p-6 sm:p-8 md:p-12"
                     >
+                        {/* Error Message */}
+                        {error && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3"
+                            >
+                                <AlertCircle className="text-red-500 flex-shrink-0" size={20} />
+                                <p className="text-red-600 text-sm">{error}</p>
+                            </motion.div>
+                        )}
+
                         {!isSubmitted ? (
                             <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
                                 {/* Always Visible - Name & Email Row */}
