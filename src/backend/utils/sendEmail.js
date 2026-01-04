@@ -11,15 +11,23 @@ import nodemailer from 'nodemailer';
  * @returns {Promise<void>}
  */
 const sendEmail = async (options) => {
+    // Use port 465 with SSL for better compatibility with cloud hosting
+    const port = parseInt(process.env.SMTP_PORT) || 465;
+    const secure = port === 465; // true for 465, false for 587
+
     // Create transporter based on environment
     const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
-        port: process.env.SMTP_PORT || 587,
-        secure: false, // true for 465, false for other ports
+        port: port,
+        secure: secure,
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS
-        }
+        },
+        // Longer timeout for cloud environments
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000,
     });
 
     // Define email options
