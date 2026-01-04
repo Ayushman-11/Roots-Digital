@@ -9,7 +9,7 @@ export const Navbar: React.FC = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     
-    const { isAuthenticated, user, logout, isLoading } = useAuth();
+    const { isAuthenticated, logout, isLoading } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
