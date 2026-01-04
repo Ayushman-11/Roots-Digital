@@ -21,10 +21,10 @@ export const About: React.FC = () => {
                         viewport={{ once: true, margin: '-10% 0px -10% 0px' }}
                         transition={{ duration: 0.65, ease: 'easeOut' }}
                     >
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark-900 mb-6">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-dark-900 mb-6 text-left">
                             About DigiRoots
                         </h2>
-                        <div className="space-y-3 text-lg text-dark-600 leading-relaxed">
+                        <div className="space-y-3 text-lg text-dark-600 leading-relaxed text-left">
                             <p>
                                 We're a digital transformation agency focused on helping businesses
                                 scale through technology, automation, and strategic marketing.

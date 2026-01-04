@@ -79,13 +79,13 @@ export const Footer: React.FC = () => {
                             <li className="flex items-center gap-2 text-dark-300">
                                 <Mail size={16} />
                                 <a href="mailto:hello@digiroots.com" className="hover:text-primary-500 transition-colors">
-                                    hello@digiroots.com
+                                    contact.rootsdigital@gmail.com
                                 </a>
                             </li>
                             <li className="flex items-center gap-2 text-dark-300">
                                 <Phone size={16} />
                                 <a href="tel:+1234567890" className="hover:text-primary-500 transition-colors">
-                                    +1 (234) 567-890
+                                    +91 7028469067
                                 </a>
                             </li>
                         </ul>
@@ -94,7 +94,7 @@ export const Footer: React.FC = () => {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-dark-800 pt-8 text-center text-dark-400 text-sm">
-                    <p>&copy; {currentYear} DigiRoots. All rights reserved.</p>
+                    <p>&copy; {currentYear} Roots Digital. All rights reserved.</p>
                 </div>
             </div>
         </footer>
