@@ -1,9 +1,9 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-const User = require('../models/User');
-const { protect } = require('../middleware/authMiddleware');
-const sendEmail = require('../utils/sendEmail');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+import User from '../models/User.js';
+import { protect } from '../middleware/authMiddleware.js';
+import sendEmail from '../utils/sendEmail.js';
 
 const router = express.Router();
 
@@ -394,4 +394,4 @@ router.post('/reset-password/:token', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
