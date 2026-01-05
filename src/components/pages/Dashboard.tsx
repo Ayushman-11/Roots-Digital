@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Calendar, Shield, LogOut, Home, Settings, Bell } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export const Dashboard: React.FC = () => {
     const { user, logout } = useAuth();
@@ -119,14 +119,13 @@ export const Dashboard: React.FC = () => {
                                     Role
                                 </label>
                                 <span className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium
-                                    ${user?.role === 'admin' 
-                                        ? 'bg-yellow-100 text-yellow-700' 
+                                    ${user?.role === 'admin'
+                                        ? 'bg-yellow-100 text-yellow-700'
                                         : 'bg-primary-100 text-primary-700'
                                     }`}
                                 >
-                                    <span className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full ${
-                                        user?.role === 'admin' ? 'bg-yellow-500' : 'bg-primary-500'
-                                    }`} />
+                                    <span className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full ${user?.role === 'admin' ? 'bg-yellow-500' : 'bg-primary-500'
+                                        }`} />
                                     {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
                                 </span>
                             </div>
@@ -218,12 +217,11 @@ export const Dashboard: React.FC = () => {
                             key={stat.label}
                             className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 border border-gray-200 shadow-sm text-center"
                         >
-                            <p className={`text-xl sm:text-2xl md:text-3xl font-bold ${
-                                stat.color === 'primary' ? 'text-primary-600' :
-                                stat.color === 'green' ? 'text-green-600' :
-                                stat.color === 'yellow' ? 'text-yellow-600' :
-                                'text-purple-600'
-                            }`}>
+                            <p className={`text-xl sm:text-2xl md:text-3xl font-bold ${stat.color === 'primary' ? 'text-primary-600' :
+                                    stat.color === 'green' ? 'text-green-600' :
+                                        stat.color === 'yellow' ? 'text-yellow-600' :
+                                            'text-purple-600'
+                                }`}>
                                 {stat.value}
                             </p>
                             <p className="text-dark-500 text-xs sm:text-sm mt-0.5 sm:mt-1">{stat.label}</p>

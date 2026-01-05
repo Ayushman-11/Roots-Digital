@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, ArrowRight, Loader2, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Map backend error messages to user-friendly messages
  */
 const getErrorMessage = (error: string): string => {
     const errorLower = error.toLowerCase();
-    
+
     if (errorLower.includes('invalid') && (errorLower.includes('email') || errorLower.includes('password') || errorLower.includes('credentials'))) {
         return 'Invalid email or password. Please check your credentials and try again.';
     }
@@ -28,12 +28,12 @@ const getErrorMessage = (error: string): string => {
     if (errorLower.includes('too many') || errorLower.includes('rate limit')) {
         return 'Too many attempts. Please wait a moment and try again.';
     }
-    
+
     // If it's a short, clean message from backend, show it
     if (error.length < 100 && !errorLower.includes('error')) {
         return error;
     }
-    
+
     return 'Something went wrong. Please try again.';
 };
 
@@ -202,8 +202,8 @@ export const Login: React.FC = () => {
                                 <label className="block text-dark-700 text-sm font-medium">
                                     Password
                                 </label>
-                                <Link 
-                                    to="/forgot-password" 
+                                <Link
+                                    to="/forgot-password"
                                     className="text-primary-600 hover:text-primary-700 text-sm font-medium transition-colors"
                                 >
                                     Forgot password?
@@ -267,8 +267,8 @@ export const Login: React.FC = () => {
                     {/* Signup Link */}
                     <p className="text-center text-dark-600">
                         Don't have an account?{' '}
-                        <Link 
-                            to="/signup" 
+                        <Link
+                            to="/signup"
                             className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
                         >
                             Create account
@@ -278,8 +278,8 @@ export const Login: React.FC = () => {
 
                 {/* Back to home */}
                 <p className="text-center mt-6">
-                    <Link 
-                        to="/" 
+                    <Link
+                        to="/"
                         className="text-dark-500 hover:text-dark-700 text-sm transition-colors"
                     >
                         ← Back to home

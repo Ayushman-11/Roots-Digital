@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, ArrowLeft, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
-import { forgotPasswordApi } from '../services/api';
+import { forgotPasswordApi } from '../../services/api';
 
 /**
  * Map backend error messages to user-friendly messages
  */
 const getErrorMessage = (error: string): string => {
     const errorLower = error.toLowerCase();
-    
+
     if (errorLower.includes('required') || errorLower.includes('provide')) {
         return 'Please enter your email address.';
     }
@@ -22,12 +22,12 @@ const getErrorMessage = (error: string): string => {
     if (errorLower.includes('email') && errorLower.includes('sent')) {
         return error; // Already a good message
     }
-    
+
     // If it's a short, clean message from backend, show it
     if (error.length < 100 && !errorLower.includes('error')) {
         return error;
     }
-    
+
     return 'Something went wrong. Please try again.';
 };
 
@@ -117,7 +117,7 @@ export const ForgotPassword: React.FC = () => {
                                 Check Your Email
                             </h2>
                             <p className="text-dark-500 mb-6 text-sm sm:text-base">
-                                If an account exists with <span className="font-medium text-dark-700">{email}</span>, 
+                                If an account exists with <span className="font-medium text-dark-700">{email}</span>,
                                 we've sent a password reset link. Please check your inbox and spam folder.
                             </p>
                             <p className="text-dark-400 text-xs sm:text-sm mb-6">

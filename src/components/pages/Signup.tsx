@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, ArrowRight, Loader2, Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Map backend error messages to user-friendly messages
  */
 const getErrorMessage = (error: string): string => {
     const errorLower = error.toLowerCase();
-    
+
     if (errorLower.includes('already exists') || errorLower.includes('duplicate') || errorLower.includes('already registered')) {
         return 'An account with this email already exists. Please sign in instead.';
     }
@@ -28,12 +28,12 @@ const getErrorMessage = (error: string): string => {
     if (errorLower.includes('too many') || errorLower.includes('rate limit')) {
         return 'Too many attempts. Please wait a moment and try again.';
     }
-    
+
     // If it's a short, clean message from backend, show it
     if (error.length < 100 && !errorLower.includes('error')) {
         return error;
     }
-    
+
     return 'Something went wrong. Please try again.';
 };
 
@@ -112,9 +112,9 @@ export const Signup: React.FC = () => {
         try {
             await signup(name, email, password);
             // Signup successful - redirect to login page with success message
-            navigate('/login', { 
-                replace: true, 
-                state: { signupSuccess: true, email } 
+            navigate('/login', {
+                replace: true,
+                state: { signupSuccess: true, email }
             });
         } catch (err) {
             // Error is set in context, but also set local error for immediate display
@@ -237,7 +237,7 @@ export const Signup: React.FC = () => {
                                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                 </button>
                             </div>
-                            
+
                             {/* Password Strength Indicator */}
                             {password && (
                                 <div className="mt-2">
@@ -245,25 +245,23 @@ export const Signup: React.FC = () => {
                                         {[1, 2, 3, 4].map((level) => (
                                             <div
                                                 key={level}
-                                                className={`h-1 flex-1 rounded-full transition-colors ${
-                                                    level <= passwordStrength.strength
+                                                className={`h-1 flex-1 rounded-full transition-colors ${level <= passwordStrength.strength
                                                         ? passwordStrength.strength <= 2
                                                             ? 'bg-red-500'
                                                             : passwordStrength.strength === 3
-                                                            ? 'bg-yellow-500'
-                                                            : 'bg-green-500'
+                                                                ? 'bg-yellow-500'
+                                                                : 'bg-green-500'
                                                         : 'bg-gray-200'
-                                                }`}
+                                                    }`}
                                             />
                                         ))}
                                     </div>
-                                    <p className={`text-xs mt-1 ${
-                                        passwordStrength.strength <= 2
+                                    <p className={`text-xs mt-1 ${passwordStrength.strength <= 2
                                             ? 'text-red-500'
                                             : passwordStrength.strength === 3
-                                            ? 'text-yellow-600'
-                                            : 'text-green-600'
-                                    }`}>
+                                                ? 'text-yellow-600'
+                                                : 'text-green-600'
+                                        }`}>
                                         {passwordStrength.label}
                                     </p>
                                 </div>
@@ -329,8 +327,8 @@ export const Signup: React.FC = () => {
                     {/* Login Link */}
                     <p className="text-center text-dark-600">
                         Already have an account?{' '}
-                        <Link 
-                            to="/login" 
+                        <Link
+                            to="/login"
                             className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
                         >
                             Sign in
@@ -340,8 +338,8 @@ export const Signup: React.FC = () => {
 
                 {/* Back to home */}
                 <p className="text-center mt-6">
-                    <Link 
-                        to="/" 
+                    <Link
+                        to="/"
                         className="text-dark-500 hover:text-dark-700 text-sm transition-colors"
                     >
                         ← Back to home

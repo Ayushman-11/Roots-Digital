@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, ArrowRight, Loader2, AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
-import { resetPasswordApi } from '../services/api';
+import { resetPasswordApi } from '../../services/api';
 
 /**
  * Map backend error messages to user-friendly messages
  */
 const getErrorMessage = (error: string): string => {
     const errorLower = error.toLowerCase();
-    
+
     if (errorLower.includes('invalid') || errorLower.includes('expired')) {
         return 'This reset link is invalid or has expired. Please request a new password reset.';
     }
@@ -25,19 +25,19 @@ const getErrorMessage = (error: string): string => {
     if (errorLower.includes('too many') || errorLower.includes('rate limit')) {
         return 'Too many attempts. Please wait a moment and try again.';
     }
-    
+
     // If it's a short, clean message from backend, show it
     if (error.length < 100 && !errorLower.includes('error')) {
         return error;
     }
-    
+
     return 'Something went wrong. Please try again.';
 };
 
 export const ResetPassword: React.FC = () => {
     const { token } = useParams<{ token: string }>();
     const navigate = useNavigate();
-    
+
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -63,7 +63,7 @@ export const ResetPassword: React.FC = () => {
             return () => clearTimeout(timer);
         }
         if (isSuccess && countdown === 0) {
-            navigate('/login', { 
+            navigate('/login', {
                 replace: true,
                 state: { passwordReset: true }
             });
@@ -212,8 +212,8 @@ export const ResetPassword: React.FC = () => {
                                     <div>
                                         <p className="text-red-600 text-sm">{error}</p>
                                         {error.includes('expired') && (
-                                            <Link 
-                                                to="/forgot-password" 
+                                            <Link
+                                                to="/forgot-password"
                                                 className="text-red-700 text-sm font-medium underline mt-1 inline-block"
                                             >
                                                 Request new reset link
@@ -251,7 +251,7 @@ export const ResetPassword: React.FC = () => {
                                             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                         </button>
                                     </div>
-                                    
+
                                     {/* Password Strength Indicator */}
                                     {password.length > 0 && (
                                         <div className="mt-2">
@@ -262,12 +262,11 @@ export const ResetPassword: React.FC = () => {
                                                     className={`h-full ${passwordStrength.color} transition-all duration-300`}
                                                 />
                                             </div>
-                                            <p className={`text-xs mt-1 ${
-                                                passwordStrength.color.includes('red') ? 'text-red-600' :
-                                                passwordStrength.color.includes('orange') ? 'text-orange-600' :
-                                                passwordStrength.color.includes('yellow') ? 'text-yellow-600' :
-                                                'text-green-600'
-                                            }`}>
+                                            <p className={`text-xs mt-1 ${passwordStrength.color.includes('red') ? 'text-red-600' :
+                                                    passwordStrength.color.includes('orange') ? 'text-orange-600' :
+                                                        passwordStrength.color.includes('yellow') ? 'text-yellow-600' :
+                                                            'text-green-600'
+                                                }`}>
                                                 {passwordStrength.label}
                                             </p>
                                         </div>
@@ -289,11 +288,11 @@ export const ResetPassword: React.FC = () => {
                                                 text-dark-900 placeholder-dark-400 text-sm sm:text-base
                                                 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
                                                 transition-all duration-200
-                                                ${confirmPassword && password !== confirmPassword 
-                                                    ? 'border-red-300 focus:ring-red-500' 
+                                                ${confirmPassword && password !== confirmPassword
+                                                    ? 'border-red-300 focus:ring-red-500'
                                                     : confirmPassword && password === confirmPassword
-                                                    ? 'border-green-300 focus:ring-green-500'
-                                                    : 'border-gray-200'
+                                                        ? 'border-green-300 focus:ring-green-500'
+                                                        : 'border-gray-200'
                                                 }`}
                                             placeholder="Confirm new password"
                                             disabled={isSubmitting}
