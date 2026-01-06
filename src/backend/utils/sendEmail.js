@@ -15,22 +15,53 @@ const sendEmail = async (options) => {
     // Use Resend in production (when API key is available)
     if (process.env.RESEND_API_KEY) {
         const resend = new Resend(process.env.RESEND_API_KEY);
-        
-        const { data, error } = await resend.emails.send({
-            from: process.env.RESEND_FROM || 'DigiRoots <onboarding@resend.dev>',
-            to: options.to,
-            subject: options.subject,
-            text: options.text,
-            html: options.html || undefined,
-        });
 
-        if (error) {
-            console.error('Resend Error:', error);
-            throw new Error(error.message);
+        // Prefer configured from, but fall back to a verified resend.dev domain when needed
+        const primaryFrom = process.env.RESEND_FROM || 'DigiRoots <onboarding@resend.dev>';
+        const fallbackFrom = 'DigiRoots <onboarding@resend.dev>';
+
+        try {
+            const { data, error } = await resend.emails.send({
+                from: primaryFrom,
+                to: options.to,
+                subject: options.subject,
+                text: options.text,
+                html: options.html || undefined,
+            });
+
+            if (error) {
+                throw error;
+            }
+
+            console.log('Email sent via Resend:', data?.id);
+            return data;
+        } catch (err) {
+            const message = err?.message || '';
+            const isDomainIssue = message.includes('not verified') || message.includes('Domain is not verified');
+
+            // Retry once with fallback sender to avoid domain verification failures
+            if (primaryFrom !== fallbackFrom && isDomainIssue) {
+                console.warn('Resend domain not verified. Retrying with fallback sender.');
+                const { data, error } = await resend.emails.send({
+                    from: fallbackFrom,
+                    to: options.to,
+                    subject: options.subject,
+                    text: options.text,
+                    html: options.html || undefined,
+                });
+
+                if (error) {
+                    console.error('Resend Error (fallback failed):', error);
+                    throw new Error(error.message);
+                }
+
+                console.log('Email sent via Resend with fallback sender:', data?.id);
+                return data;
+            }
+
+            console.error('Resend Error:', err);
+            throw new Error(message || 'Failed to send email');
         }
-
-        console.log('Email sent via Resend:', data?.id);
-        return data;
     }
 
     // Fallback to Nodemailer for local development

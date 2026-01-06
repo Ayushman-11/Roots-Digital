@@ -201,6 +201,12 @@ npm install -g vercel
 vercel
 ```
 
+#### Production env (Vercel default domain + Resend sender)
+- Frontend env: `VITE_LEAD_WEBHOOK_URL=https://ayushkumbhar1111.app.n8n.cloud/webhook/roots-lead`
+- Backend env (if deployed): `RESEND_API_KEY=<your key>`, `RESEND_FROM="DigiRoots <onboarding@resend.dev>"`
+- Keep the Vercel default domain (e.g., `your-app.vercel.app`) if you don’t own a custom domain.
+- Resend uses the verified `onboarding@resend.dev` sender; custom domains require DNS verification before use.
+
 ### Netlify
 ```bash
 npm run build

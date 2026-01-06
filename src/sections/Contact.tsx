@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, CheckCircle, Loader2, ChevronDown, AlertCircle } from 'lucide-react';
 
-// API URL - uses production URL in production, localhost in development
-const API_BASE_URL = import.meta.env.PROD 
-    ? 'https://roots-digital.onrender.com/api' 
-    : 'http://localhost:5000/api';
+// Lead webhook (n8n) for contact form submissions
+const LEAD_WEBHOOK_URL = import.meta.env.VITE_LEAD_WEBHOOK_URL
+    || 'https://ayushkumbhar1111.app.n8n.cloud/webhook/roots-lead';
 
 const serviceOptions = [
     'Website Development',
@@ -33,9 +32,9 @@ export const Contact: React.FC = () => {
         e.preventDefault();
         setIsSubmitting(true);
         setError('');
-        
+
         try {
-            const response = await fetch(`${API_BASE_URL}/leads`, {
+            const response = await fetch(LEAD_WEBHOOK_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,14 +44,21 @@ export const Contact: React.FC = () => {
                     email: formData.email,
                     companyName: formData.business,
                     serviceInterested: formData.services.join(', '),
+                    services: formData.services, // include raw list for downstream flexibility
                     message: formData.message,
                 }),
             });
 
-            const data = await response.json();
+            // n8n usually returns JSON; guard against non-JSON responses
+            let data: { message?: string } | undefined;
+            try {
+                data = await response.json();
+            } catch (_) {
+                data = undefined;
+            }
 
             if (!response.ok) {
-                throw new Error(data.message || 'Something went wrong');
+                throw new Error(data?.message || 'Something went wrong');
             }
 
             setIsSubmitted(true);
@@ -297,9 +303,9 @@ export const Contact: React.FC = () => {
                                                 ) : (
                                                     <>
                                                         Get Free Strategy Call
-                                                        <ArrowRight 
-                                                            size={20} 
-                                                            className="group-hover:translate-x-1 transition-transform duration-300" 
+                                                        <ArrowRight
+                                                            size={20}
+                                                            className="group-hover:translate-x-1 transition-transform duration-300"
                                                         />
                                                     </>
                                                 )}
