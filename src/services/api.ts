@@ -1,153 +1,49 @@
 /**
  * API Service
- * Handles all authentication API calls
+ * Thin wrapper around Supabase client for data operations
  */
+import { supabase } from '../lib/supabase';
 
-// Use environment variable for API URL, fallback to production URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-    (import.meta.env.PROD 
-        ? 'https://roots-digital.onrender.com/api' 
-        : 'http://localhost:5000/api');
+// Re-export supabase client for convenience
+export { supabase };
 
-// Types
-export interface User {
-    id: string;
+// ── Lead types ──────────────────────────────────────────────────────────
+
+export interface Lead {
+    id?: string;
     name: string;
     email: string;
-    role: string;
-    createdAt: string;
-}
-
-export interface AuthResponse {
-    success: boolean;
+    business: string;
+    services: string[];
     message: string;
-    token?: string;
-    user?: User;
-}
-
-export interface ApiError {
-    success: false;
-    message: string;
+    created_at?: string;
 }
 
 /**
- * Get stored auth token from localStorage
+ * Insert a new lead from the contact form
  */
-export const getToken = (): string | null => {
-    return localStorage.getItem('token');
-};
+export const insertLead = async (lead: Omit<Lead, 'id' | 'created_at'>): Promise<void> => {
+    const { error } = await supabase.from('leads').insert(lead);
 
-/**
- * Set auth token in localStorage
- */
-export const setToken = (token: string): void => {
-    localStorage.setItem('token', token);
-};
-
-/**
- * Remove auth token from localStorage
- */
-export const removeToken = (): void => {
-    localStorage.removeItem('token');
-};
-
-/**
- * Make API request with optional auth header
- */
-const apiRequest = async <T>(
-    endpoint: string,
-    options: RequestInit = {}
-): Promise<T> => {
-    const token = getToken();
-    
-    const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-        ...options.headers,
-    };
-
-    const url = `${API_BASE_URL}${endpoint}`;
-    console.log('API Request to:', url); // Debug log
-
-    try {
-        const response = await fetch(url, {
-            ...options,
-            headers,
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || 'Something went wrong');
-        }
-
-        return data;
-    } catch (error) {
-        console.error('API Error:', error);
-        if (error instanceof TypeError && error.message.includes('fetch')) {
-            throw new Error('Unable to connect to server. Please check your internet connection.');
-        }
+    if (error) {
+        console.error('Supabase insertLead error:', error);
         throw error;
     }
 };
 
 /**
- * Signup API call
+ * Fetch all leads (for authenticated dashboard use)
  */
-export const signupApi = async (
-    name: string,
-    email: string,
-    password: string
-): Promise<AuthResponse> => {
-    return apiRequest<AuthResponse>('/auth/signup', {
-        method: 'POST',
-        body: JSON.stringify({ name, email, password }),
-    });
-};
+export const fetchLeads = async (): Promise<Lead[]> => {
+    const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-/**
- * Login API call
- */
-export const loginApi = async (
-    email: string,
-    password: string
-): Promise<AuthResponse> => {
-    return apiRequest<AuthResponse>('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-    });
-};
+    if (error) {
+        console.error('Supabase fetchLeads error:', error);
+        throw error;
+    }
 
-/**
- * Get current user API call
- */
-export const getMeApi = async (): Promise<AuthResponse> => {
-    return apiRequest<AuthResponse>('/auth/me', {
-        method: 'GET',
-    });
-};
-
-/**
- * Forgot password API call
- */
-export const forgotPasswordApi = async (
-    email: string
-): Promise<{ success: boolean; message: string }> => {
-    return apiRequest<{ success: boolean; message: string }>('/auth/forgot-password', {
-        method: 'POST',
-        body: JSON.stringify({ email }),
-    });
-};
-
-/**
- * Reset password API call
- */
-export const resetPasswordApi = async (
-    token: string,
-    password: string
-): Promise<{ success: boolean; message: string }> => {
-    return apiRequest<{ success: boolean; message: string }>(`/auth/reset-password/${token}`, {
-        method: 'POST',
-        body: JSON.stringify({ password }),
-    });
+    return data ?? [];
 };

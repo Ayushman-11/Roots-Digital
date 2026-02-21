@@ -22,6 +22,10 @@ export const Dashboard: React.FC = () => {
         });
     };
 
+    // Supabase stores extra profile fields under user_metadata
+    const displayName: string = user?.user_metadata?.name ?? user?.email?.split('@')[0] ?? 'User';
+    const role: string = user?.user_metadata?.role ?? 'user';
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
             {/* Background decorations */}
@@ -71,7 +75,7 @@ export const Dashboard: React.FC = () => {
                     className="mb-4 sm:mb-8"
                 >
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark-900 mb-1 sm:mb-2">
-                        Welcome back, {user?.name?.split(' ')[0]}! 👋
+                        Welcome back, {displayName.split(' ')[0]}! 👋
                     </h1>
                     <p className="text-sm sm:text-base text-dark-500">
                         Here's your profile overview.
@@ -100,7 +104,7 @@ export const Dashboard: React.FC = () => {
                                     <User size={12} className="sm:w-3.5 sm:h-3.5" />
                                     Full Name
                                 </label>
-                                <p className="text-dark-900 text-base sm:text-lg font-medium">{user?.name}</p>
+                                <p className="text-dark-900 text-base sm:text-lg font-medium">{displayName}</p>
                             </div>
 
                             {/* Email */}
@@ -119,14 +123,13 @@ export const Dashboard: React.FC = () => {
                                     Role
                                 </label>
                                 <span className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium
-                                    ${user?.role === 'admin'
+                                    ${role === 'admin'
                                         ? 'bg-yellow-100 text-yellow-700'
                                         : 'bg-primary-100 text-primary-700'
                                     }`}
                                 >
-                                    <span className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full ${user?.role === 'admin' ? 'bg-yellow-500' : 'bg-primary-500'
-                                        }`} />
-                                    {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'User'}
+                                    <span className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full ${role === 'admin' ? 'bg-yellow-500' : 'bg-primary-500'}`} />
+                                    {role.charAt(0).toUpperCase() + role.slice(1)}
                                 </span>
                             </div>
 
@@ -137,7 +140,7 @@ export const Dashboard: React.FC = () => {
                                     Member Since
                                 </label>
                                 <p className="text-dark-900 text-base sm:text-lg font-medium">
-                                    {user?.createdAt ? formatDate(user.createdAt) : 'N/A'}
+                                    {user?.created_at ? formatDate(user.created_at) : 'N/A'}
                                 </p>
                             </div>
                         </div>
@@ -218,9 +221,9 @@ export const Dashboard: React.FC = () => {
                             className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-6 border border-gray-200 shadow-sm text-center"
                         >
                             <p className={`text-xl sm:text-2xl md:text-3xl font-bold ${stat.color === 'primary' ? 'text-primary-600' :
-                                    stat.color === 'green' ? 'text-green-600' :
-                                        stat.color === 'yellow' ? 'text-yellow-600' :
-                                            'text-purple-600'
+                                stat.color === 'green' ? 'text-green-600' :
+                                    stat.color === 'yellow' ? 'text-yellow-600' :
+                                        'text-purple-600'
                                 }`}>
                                 {stat.value}
                             </p>

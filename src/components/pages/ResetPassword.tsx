@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, ArrowRight, Loader2, AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
-import { resetPasswordApi } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 /**
- * Map backend error messages to user-friendly messages
+ * Map error messages to user-friendly messages
  */
 const getErrorMessage = (error: string): string => {
     const errorLower = error.toLowerCase();
@@ -26,7 +26,7 @@ const getErrorMessage = (error: string): string => {
         return 'Too many attempts. Please wait a moment and try again.';
     }
 
-    // If it's a short, clean message from backend, show it
+    // If it's a short, clean message, show it
     if (error.length < 100 && !errorLower.includes('error')) {
         return error;
     }
@@ -35,8 +35,8 @@ const getErrorMessage = (error: string): string => {
 };
 
 export const ResetPassword: React.FC = () => {
-    const { token } = useParams<{ token: string }>();
     const navigate = useNavigate();
+    const { updatePassword, session } = useAuth();
 
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -46,6 +46,16 @@ export const ResetPassword: React.FC = () => {
     const [error, setError] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
     const [countdown, setCountdown] = useState(5);
+    const [hasRecoverySession, setHasRecoverySession] = useState(false);
+
+    // Supabase appends recovery tokens as URL hash params.
+    // The onAuthStateChange listener in AuthContext picks up the PASSWORD_RECOVERY
+    // event and establishes a session. We detect this here.
+    useEffect(() => {
+        if (session) {
+            setHasRecoverySession(true);
+        }
+    }, [session]);
 
     // Clear error when user starts typing
     useEffect(() => {
@@ -70,13 +80,6 @@ export const ResetPassword: React.FC = () => {
         }
     }, [isSuccess, countdown, navigate]);
 
-    // Check if token exists
-    useEffect(() => {
-        if (!token) {
-            setError('Invalid reset link. Please request a new password reset.');
-        }
-    }, [token]);
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -97,15 +100,15 @@ export const ResetPassword: React.FC = () => {
             return;
         }
 
-        if (!token) {
-            setError('Invalid reset link. Please request a new password reset.');
+        if (!hasRecoverySession) {
+            setError('Invalid or expired reset link. Please request a new password reset.');
             return;
         }
 
         setIsSubmitting(true);
 
         try {
-            await resetPasswordApi(token, password);
+            await updatePassword(password);
             setIsSuccess(true);
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Reset failed';
@@ -263,9 +266,9 @@ export const ResetPassword: React.FC = () => {
                                                 />
                                             </div>
                                             <p className={`text-xs mt-1 ${passwordStrength.color.includes('red') ? 'text-red-600' :
-                                                    passwordStrength.color.includes('orange') ? 'text-orange-600' :
-                                                        passwordStrength.color.includes('yellow') ? 'text-yellow-600' :
-                                                            'text-green-600'
+                                                passwordStrength.color.includes('orange') ? 'text-orange-600' :
+                                                    passwordStrength.color.includes('yellow') ? 'text-yellow-600' :
+                                                        'text-green-600'
                                                 }`}>
                                                 {passwordStrength.label}
                                             </p>
@@ -319,7 +322,7 @@ export const ResetPassword: React.FC = () => {
                                 {/* Submit Button */}
                                 <button
                                     type="submit"
-                                    disabled={isSubmitting || !token}
+                                    disabled={isSubmitting || !hasRecoverySession}
                                     className="w-full py-3 sm:py-3.5 px-6 bg-primary-600 hover:bg-primary-700 
                                         disabled:bg-primary-400 disabled:cursor-not-allowed
                                         text-white font-semibold rounded-xl

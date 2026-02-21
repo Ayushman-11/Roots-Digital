@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, CheckCircle, Loader2, ChevronDown, AlertCircle } from 'lucide-react';
+import { insertLead } from '../services/api';
 
 // Lead webhook (n8n) for contact form submissions
 const LEAD_WEBHOOK_URL = import.meta.env.VITE_LEAD_WEBHOOK_URL
@@ -34,6 +35,7 @@ export const Contact: React.FC = () => {
         setError('');
 
         try {
+            // 1. Send to n8n webhook (existing behaviour)
             const response = await fetch(LEAD_WEBHOOK_URL, {
                 method: 'POST',
                 headers: {
@@ -44,7 +46,7 @@ export const Contact: React.FC = () => {
                     email: formData.email,
                     companyName: formData.business,
                     serviceInterested: formData.services.join(', '),
-                    services: formData.services, // include raw list for downstream flexibility
+                    services: formData.services,
                     message: formData.message,
                 }),
             });
@@ -60,6 +62,18 @@ export const Contact: React.FC = () => {
             if (!response.ok) {
                 throw new Error(data?.message || 'Something went wrong');
             }
+
+            // 2. Persist lead to Supabase (fire-and-forget; don't block UI on failure)
+            insertLead({
+                name: formData.name,
+                email: formData.email,
+                business: formData.business,
+                services: formData.services,
+                message: formData.message,
+            }).catch((err) => {
+                // Log Supabase error but don't surface to user — webhook already succeeded
+                console.warn('Supabase lead insert failed (non-critical):', err);
+            });
 
             setIsSubmitted(true);
             setTimeout(() => {
@@ -313,7 +327,7 @@ export const Contact: React.FC = () => {
 
                                             {/* Social Proof */}
                                             <p className="text-sm text-dark-500 text-center pt-2">
-                                                <span className="text-yellow-500">⭐</span> Trusted by startups & growing businesses
+                                                <span className="text-yellow-500">⭐</span> Trusted by startups &amp; growing businesses
                                             </p>
 
                                             {/* Collapse Option */}

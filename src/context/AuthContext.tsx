@@ -1,23 +1,19 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import type { User } from '../services/api';
-import { 
-    loginApi, 
-    signupApi, 
-    getMeApi, 
-    getToken, 
-    setToken, 
-    removeToken 
-} from '../services/api';
+import type { User, Session } from '@supabase/supabase-js';
+import { supabase } from '../lib/supabase';
 
 // Types
 interface AuthContextType {
     user: User | null;
+    session: Session | null;
     isAuthenticated: boolean;
     isLoading: boolean;
     error: string | null;
     login: (email: string, password: string) => Promise<void>;
     signup: (name: string, email: string, password: string) => Promise<void>;
-    logout: () => void;
+    logout: () => Promise<void>;
+    resetPassword: (email: string) => Promise<void>;
+    updatePassword: (newPassword: string) => Promise<void>;
     clearError: () => void;
 }
 
@@ -26,118 +22,133 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 /**
  * Auth Provider Component
- * Manages authentication state and provides auth functions
+ * Manages authentication state via Supabase Auth
  */
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [session, setSession] = useState<Session | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     /**
-     * Load user from stored token on app initialization
+     * Initialise auth state and subscribe to changes
      */
-    const loadUser = useCallback(async () => {
-        const token = getToken();
-        
-        if (!token) {
+    useEffect(() => {
+        // Get the initial session
+        supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+            setSession(initialSession);
+            setUser(initialSession?.user ?? null);
             setIsLoading(false);
-            return;
-        }
+        });
 
-        try {
-            const response = await getMeApi();
-            if (response.success && response.user) {
-                setUser(response.user);
-            } else {
-                // Invalid token, clean up
-                removeToken();
+        // Listen for auth state changes (login, logout, token refresh, etc.)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+            (_event, newSession) => {
+                setSession(newSession);
+                setUser(newSession?.user ?? null);
+                setIsLoading(false);
             }
-        } catch (err) {
-            // Token expired or invalid
-            console.error('Failed to load user:', err);
-            removeToken();
-        } finally {
-            setIsLoading(false);
+        );
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
+
+    /**
+     * Login with email + password
+     */
+    const login = useCallback(async (email: string, password: string): Promise<void> => {
+        setError(null);
+
+        const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (authError) {
+            setError(authError.message);
+            throw authError;
         }
     }, []);
 
-    // Load user on mount
-    useEffect(() => {
-        loadUser();
-    }, [loadUser]);
-
     /**
-     * Login function
+     * Sign up with email + password.  Name is stored in user_metadata.
      */
-    const login = async (email: string, password: string): Promise<void> => {
-        setIsLoading(true);
+    const signup = useCallback(async (name: string, email: string, password: string): Promise<void> => {
         setError(null);
 
-        try {
-            const response = await loginApi(email, password);
-            
-            if (response.success && response.token && response.user) {
-                setToken(response.token);
-                setUser(response.user);
-            } else {
-                throw new Error(response.message || 'Login failed');
-            }
-        } catch (err) {
-            const message = err instanceof Error ? err.message : 'Login failed';
-            setError(message);
-            throw err;
-        } finally {
-            setIsLoading(false);
+        const { error: authError } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: { name },          // stored in user_metadata
+            },
+        });
+
+        if (authError) {
+            setError(authError.message);
+            throw authError;
         }
-    };
+    }, []);
 
     /**
-     * Signup function - only creates account, does not auto-login
+     * Logout
      */
-    const signup = async (name: string, email: string, password: string): Promise<void> => {
-        setIsLoading(true);
+    const logout = useCallback(async (): Promise<void> => {
         setError(null);
-
-        try {
-            const signupResponse = await signupApi(name, email, password);
-            
-            if (!signupResponse.success) {
-                throw new Error(signupResponse.message || 'Signup failed');
-            }
-            // Success - user will be redirected to login page
-        } catch (err) {
-            const message = err instanceof Error ? err.message : 'Signup failed';
-            setError(message);
-            throw err;
-        } finally {
-            setIsLoading(false);
+        const { error: authError } = await supabase.auth.signOut();
+        if (authError) {
+            setError(authError.message);
+            throw authError;
         }
-    };
+    }, []);
 
     /**
-     * Logout function
+     * Send password-reset email
      */
-    const logout = (): void => {
-        removeToken();
-        setUser(null);
+    const resetPassword = useCallback(async (email: string): Promise<void> => {
         setError(null);
-    };
+
+        const { error: authError } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/reset-password`,
+        });
+
+        if (authError) {
+            setError(authError.message);
+            throw authError;
+        }
+    }, []);
+
+    /**
+     * Update user password (called on /reset-password page after email link)
+     */
+    const updatePassword = useCallback(async (newPassword: string): Promise<void> => {
+        setError(null);
+
+        const { error: authError } = await supabase.auth.updateUser({ password: newPassword });
+
+        if (authError) {
+            setError(authError.message);
+            throw authError;
+        }
+    }, []);
 
     /**
      * Clear error
      */
-    const clearError = (): void => {
+    const clearError = useCallback((): void => {
         setError(null);
-    };
+    }, []);
 
     const value: AuthContextType = {
         user,
-        isAuthenticated: !!user,
+        session,
+        isAuthenticated: !!session,
         isLoading,
         error,
         login,
         signup,
         logout,
+        resetPassword,
+        updatePassword,
         clearError,
     };
 
@@ -153,10 +164,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
  */
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
-    
+
     if (context === undefined) {
         throw new Error('useAuth must be used within an AuthProvider');
     }
-    
+
     return context;
 };

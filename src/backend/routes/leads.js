@@ -135,13 +135,46 @@ Submitted on: ${submittedAt}
 </html>
         `.trim();
 
-        // Send email notification to admin
-        await sendEmail({
+        // Notify both admin and submitter in parallel so one failure does not block the other
+        const adminMail = sendEmail({
             to: adminEmail,
             subject: emailSubject,
             text: emailText,
             html: emailHtml
         });
+
+        const submitterMail = sendEmail({
+            to: email,
+            subject: 'We received your inquiry at DigiRoots',
+            text: `Hi ${name},\n\nThanks for reaching out! We received your details and will respond within one business day. If you need to add anything else, just reply to this email.\n\nSummary:\n- Name: ${name}\n- Company: ${companyName || 'Not provided'}\n- Service: ${serviceInterested || 'Not specified'}\n- Message: ${message || 'No message provided'}\n\nTalk soon,\nTeam DigiRoots`,
+            html: `
+<!DOCTYPE html>
+<html>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f5f5f5;">
+    <div style="background: #1f2937; color: white; padding: 24px; border-radius: 12px 12px 0 0; text-align: center;">
+        <h2 style="margin: 0; font-size: 22px;">We received your inquiry</h2>
+    </div>
+    <div style="background: white; padding: 24px; border: 1px solid #e5e7eb; border-top: none;">
+        <p>Hi ${name},</p>
+        <p>Thanks for reaching out to DigiRoots. We have your details and will reply within one business day.</p>
+        <p style="margin-bottom: 12px; font-weight: 600;">Summary</p>
+        <ul style="padding-left: 18px; margin: 0 0 16px 0; color: #4b5563;">
+            <li><strong>Name:</strong> ${name}</li>
+            <li><strong>Company:</strong> ${companyName || 'Not provided'}</li>
+            <li><strong>Service:</strong> ${serviceInterested || 'Not specified'}</li>
+            <li><strong>Message:</strong> ${message || 'No message provided'}</li>
+        </ul>
+        <p style="margin: 0; color: #6b7280; font-size: 14px;">If you want to add anything, just reply to this email.</p>
+    </div>
+    <div style="background: #f9fafb; padding: 16px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px; text-align: center; color: #6b7280; font-size: 13px;">
+        <p style="margin: 0;">Team DigiRoots</p>
+    </div>
+</body>
+</html>
+            `.trim()
+        });
+
+        await Promise.all([adminMail, submitterMail]);
 
         // Return success response
         res.status(200).json({

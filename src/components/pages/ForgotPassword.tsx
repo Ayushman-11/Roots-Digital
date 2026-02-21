@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, ArrowLeft, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
-import { forgotPasswordApi } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 /**
- * Map backend error messages to user-friendly messages
+ * Map error messages to user-friendly messages
  */
 const getErrorMessage = (error: string): string => {
     const errorLower = error.toLowerCase();
@@ -37,6 +37,8 @@ export const ForgotPassword: React.FC = () => {
     const [error, setError] = useState('');
     const [isSuccess, setIsSuccess] = useState(false);
 
+    const { resetPassword } = useAuth();
+
     // Clear error when user starts typing
     useEffect(() => {
         if (error) {
@@ -64,7 +66,7 @@ export const ForgotPassword: React.FC = () => {
         setIsSubmitting(true);
 
         try {
-            await forgotPasswordApi(email);
+            await resetPassword(email);
             setIsSuccess(true);
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Request failed';
